@@ -70,13 +70,22 @@ void run(CPU *cpu)
     while (cpu->is_running) {
         uint32_t instruction = fetch(cpu);
         uint8_t op = extract_op(instruction);
-        uint8_t dst = (instruction & 0x0000FF00) >> 8;
-        uint8_t src = instruction & 0x000000FF;
+        uint8_t dst = (instruction & 0x00FF0000) >> 16;
+        uint8_t src = instruction & 0x0000FF00 >> 8;
 
         switch (op) {
             case HALT:
                 printf("halt\n");
                 cpu->is_running = 0;
+                break;
+            case MOV:
+                printf("mov\n");
+                cpu->registers[dst] = cpu->registers[src];
+                break;
+            case MOVC:
+                printf("movc\n");
+                printf("insert: %d\n", instruction & 0x0000FFFF);
+                cpu->registers[dst] = instruction & 0x0000FFFF;
                 break;
             case PUSH:
                 printf("push\n");
@@ -101,7 +110,6 @@ void run(CPU *cpu)
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
                     printf("set flag 0\n");
-                    printf("%d\n", cpu->flags);
                 } else {
                     set_not_equal(cpu);
                 }
@@ -113,6 +121,11 @@ void run(CPU *cpu)
                     printf("jumping to %d\n", cpu->registers[src]);
                     jump(cpu, cpu->registers[src]);
                 }
+                break;
+            case JMP:
+                printf("jmp\n");
+                printf("jumping to %d\n", cpu->registers[src]);
+                jump(cpu, cpu->registers[src]);
                 break;
             case CALL:
                 printf("call\n");
@@ -129,11 +142,12 @@ void run(CPU *cpu)
 
 
 
-void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint8_t src)
+void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src)
 {
     static int instruction_cnt = 0;
     cpu->memory[cpu->program_counter + instruction_cnt] = op;
-    cpu->memory[cpu->program_counter + instruction_cnt + 2] = dst;
-    cpu->memory[cpu->program_counter + instruction_cnt + 3] = src;
+    cpu->memory[cpu->program_counter + instruction_cnt + 1] = dst;
+    cpu->memory[cpu->program_counter + instruction_cnt + 2] = src & 0xFF00;
+    cpu->memory[cpu->program_counter + instruction_cnt + 3] = src & 0x00FF;
     instruction_cnt += 4;
 }

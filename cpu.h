@@ -15,11 +15,14 @@ enum REGS {
 };
 
 enum OPS {
+    MOV,
+    MOVC,
     PUSH,
     POP,
     ADD,
     SUB,
     JEQ,
+    JMP,
     CALL,
     RET,
     HALT
@@ -39,5 +42,5 @@ void set_equal(CPU *cpu);
 void set_not_equal(CPU *cpu);
 void jump(CPU *cpu, int32_t location);
 void run(CPU *cpu);
-void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint8_t src);
+void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src);
 CPU *new_cpu();

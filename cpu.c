@@ -11,12 +11,15 @@ CPU *new_cpu() {
     if (c == NULL) {
         die("could not allocate cpu");
     }
-    c->memory = (uint8_t *)malloc(sizeof(uint8_t) * UINT32_MAX); if (c->memory == NULL) {
+    c->memory = (uint8_t *)malloc(sizeof(uint8_t) * UINT32_MAX);
+    if (c->memory == NULL) {
         die("could not allocate cpu memory");
     }
     c->registers[ESP] = UINT32_MAX;
     c->program_counter = 0;
     c->is_running = 0;
+
+    return c;
 }
 
 void push(CPU *cpu, int32_t content)

@@ -44,3 +44,9 @@ void jump(CPU *cpu, int32_t location);
 void run(CPU *cpu);
 void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src);
 CPU *new_cpu();
+
+// Write four bytes to memory
+void write_to_mem(uint8_t memory[], uint32_t location, uint32_t content);
+
+// Read four bytes from memory
+uint32_t read_from_mem(uint8_t memory[], uint32_t location);

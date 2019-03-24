@@ -151,3 +151,20 @@ void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src)
     cpu->memory[cpu->program_counter + instruction_cnt + 3] = src & 0x00FF;
     instruction_cnt += 4;
 }
+
+
+void write_to_mem(uint8_t memory[], uint32_t location, uint32_t content)
+{
+    memory[location] |= content & 0xFF000000 >> 24;
+    memory[location + 1] |= content & 0x00FF0000 >> 16;
+    memory[location + 2] |= content & 0x0000FF00 >> 8;
+    memory[location + 3] |= content & 0x000000FF;
+}
+
+uint32_t read_from_mem(uint8_t memory[], uint32_t location)
+{
+    return (uint32_t)memory[location] << 24 |
+      (uint32_t)memory[location + 1] << 16 |
+      (uint32_t)memory[location + 2] << 8  |
+      (uint32_t)memory[location + 3];
+}

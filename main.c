@@ -26,27 +26,37 @@ int main()
 
 
 
-    // 0
-    make_instruction(cpu, MOVC, EBX, 5);
-    // 4
-    make_instruction(cpu, MOVC, EAX, 5);
-    // 8
-    make_instruction(cpu, SUB, EBX, EAX);
-    // 12
-    make_instruction(cpu, MOVC, EAX, 24);
-    // 16
-    make_instruction(cpu, JEQ, 0, EAX);
-    // 20
+    //// 0
+    //make_instruction(cpu, MOVC, EBX, 5);
+    //// 4
+    //make_instruction(cpu, MOVC, EAX, 5);
+    //// 8
+    //make_instruction(cpu, SUB, EBX, EAX);
+    //// 12
+    //make_instruction(cpu, MOVC, EAX, 24);
+    //// 16
+    //make_instruction(cpu, JEQ, 0, EAX);
+    //// 20
+    //make_instruction(cpu, PUSH, 0, EAX);
+    //// 24
+    //make_instruction(cpu, PUSH, 0, EBX);
+    //// 28
+    //make_instruction(cpu, HALT, 0, 0);
+
+    make_instruction(cpu, MOVC, EAX, 15);
+    make_instruction(cpu, MOVC, EBX, 9);
     make_instruction(cpu, PUSH, 0, EAX);
-    // 24
     make_instruction(cpu, PUSH, 0, EBX);
-    // 28
     make_instruction(cpu, HALT, 0, 0);
 
     run(cpu);
 
-    for (int i = UINT32_MAX - 1; i > UINT32_MAX - 5; i--) {
-        printf("%d\n", ((int32_t*)cpu->memory)[i]);
-    }
+    print_bits(read_from_mem(cpu->memory, UINT32_MAX - 4));
+    print_bits(read_from_mem(cpu->memory, UINT32_MAX - 8));
+    print_bits(read_from_mem(cpu->memory, UINT32_MAX - 12));
+
+    print_bits(pop(cpu));
+    print_bits(pop(cpu));
+
     return 0;
 }

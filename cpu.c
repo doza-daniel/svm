@@ -47,6 +47,16 @@ uint8_t extract_op(uint32_t instruction)
     return instruction >> 24;
 }
 
+uint8_t extract_dst(uint32_t instruction)
+{
+    return (instruction & 0x00FF0000) >> 16;
+}
+
+uint16_t extract_src(uint32_t instruction)
+{
+    return instruction & 0xFF;
+}
+
 void set_equal(CPU *cpu)
 {
     cpu->flags |= 0x1;
@@ -54,7 +64,7 @@ void set_equal(CPU *cpu)
 
 void set_not_equal(CPU *cpu)
 {
-    cpu->flags |= 0x0;
+    cpu->flags &= 0xFFFFFFFE;
 }
 
 void jump(CPU *cpu, int32_t location)
@@ -70,8 +80,8 @@ void run(CPU *cpu)
     while (cpu->is_running) {
         uint32_t instruction = fetch(cpu);
         uint8_t op = extract_op(instruction);
-        uint8_t dst = (instruction & 0x00FF0000) >> 16;
-        uint8_t src = instruction & 0x0000FF00 >> 8;
+        uint8_t dst = extract_dst(instruction);
+        uint16_t src = extract_src(instruction);
 
         switch (op) {
             case HALT:
@@ -82,10 +92,10 @@ void run(CPU *cpu)
                 printf("mov\n");
                 cpu->registers[dst] = cpu->registers[src];
                 break;
-            case MOVC:
+            case MOVI:
                 printf("movc\n");
-                printf("insert: %d\n", instruction & 0x0000FFFF);
-                cpu->registers[dst] = instruction & 0x0000FFFF;
+                printf("insert: %d\n", src);
+                cpu->registers[dst] = src;
                 break;
             case PUSH:
                 printf("push\n");
@@ -113,7 +123,6 @@ void run(CPU *cpu)
                 } else {
                     set_not_equal(cpu);
                 }
-
                 break;
             case JEQ:
                 printf("jeq\n");
@@ -142,12 +151,12 @@ void run(CPU *cpu)
 
 
 
-void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src)
+void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint16_t src)
 {
     static int instruction_cnt = 0;
     cpu->memory[cpu->program_counter + instruction_cnt] = op;
     cpu->memory[cpu->program_counter + instruction_cnt + 1] = dst;
-    cpu->memory[cpu->program_counter + instruction_cnt + 2] = src & 0xFF00;
+    cpu->memory[cpu->program_counter + instruction_cnt + 2] = (src & 0xFF00) >> 8;
     cpu->memory[cpu->program_counter + instruction_cnt + 3] = src & 0x00FF;
     instruction_cnt += 4;
 }

@@ -16,7 +16,7 @@ enum REGS {
 
 enum OPS {
     MOV,
-    MOVC,
+    MOVI,
     PUSH,
     POP,
     ADD,
@@ -37,12 +37,16 @@ typedef struct _CPU {
 void push(CPU *cpu, int32_t content);
 int32_t pop(CPU *cpu);
 uint32_t fetch(CPU *cpu);
+
 uint8_t extract_op(uint32_t instruction);
+uint8_t extract_dst(uint32_t instruction);
+uint16_t extract_src(uint32_t instruction);
+
 void set_equal(CPU *cpu);
 void set_not_equal(CPU *cpu);
 void jump(CPU *cpu, int32_t location);
 void run(CPU *cpu);
-void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint32_t src);
+void make_instruction(CPU *cpu, uint8_t op, uint8_t dst, uint16_t src);
 CPU *new_cpu();
 
 // Write four bytes to memory

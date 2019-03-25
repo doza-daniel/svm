@@ -16,6 +16,7 @@ CPU *new_cpu() {
         die("could not allocate cpu memory");
     }
     c->registers[ESP] = UINT32_MAX;
+    c->registers[EBP] = UINT32_MAX;
     c->program_counter = 0;
     c->is_running = 0;
 

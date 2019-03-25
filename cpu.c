@@ -106,7 +106,7 @@ void run(CPU *cpu)
                 break;
             case POP:
                 printf("pop\n");
-                cpu->registers[src] = pop(cpu);
+                cpu->registers[dst] = pop(cpu);
                 break;
             case ADD:
                 printf("add\n");

@@ -93,10 +93,13 @@ void run(CPU *cpu)
                 cpu->registers[dst] = cpu->registers[src];
                 break;
             case MOVI:
-                printf("movc\n");
+                printf("movi\n");
                 printf("insert: %d\n", src);
                 cpu->registers[dst] = src;
                 break;
+            case MOVA:
+                printf("mova\n");
+                cpu->registers[dst] = read_from_mem(cpu->memory, cpu->registers[src]);
             case PUSH:
                 printf("push\n");
                 push(cpu, cpu->registers[src]);

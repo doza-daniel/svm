@@ -17,6 +17,7 @@ enum REGS {
 enum OPS {
     MOV,
     MOVI,
+    MOVA,
     PUSH,
     POP,
     ADD,

@@ -1,5 +1,6 @@
 #include "cpu.h"
 
+char *reg_name(int);
 
 void die(const char *msg) {
     perror(msg);
@@ -90,98 +91,115 @@ void run(CPU *cpu)
                 cpu->is_running = 0;
                 break;
             case MOV:
-                printf("mov\n");
+                printf("mov\t[%s: %d <- %s: %d]\n",
+                        reg_name(dst), cpu->registers[dst], reg_name(src), cpu->registers[src]);
                 cpu->registers[dst] = cpu->registers[src];
                 break;
             case MOVI:
-                printf("movi\n");
-                printf("insert: %d\n", src);
+                printf("movi\t[%s: %d <- %d]\n",
+                        reg_name(dst), cpu->registers[dst], src);
                 cpu->registers[dst] = src;
                 break;
             case MOVA:
-                printf("mova\n");
+                printf("mova\t[%s: %d <- %u]\n",
+                        reg_name(dst), cpu->registers[dst], read_from_mem(cpu->memory, cpu->registers[src]));
                 cpu->registers[dst] = read_from_mem(cpu->memory, cpu->registers[src]);
                 break;
             case PUSH:
-                printf("push\n");
+                printf("push\t[stack <- %s: %d]\n", reg_name(src), cpu->registers[src]);
                 push(cpu, cpu->registers[src]);
                 break;
             case PUSHI:
-                printf("pushi\n");
+                printf("pushi\t[stack <- %d]\n", src);
                 push(cpu, src);
                 break;
             case POP:
-                printf("pop\n");
                 cpu->registers[dst] = pop(cpu);
+                printf("pop\t[%s: %d <- stack]\n", reg_name(dst), cpu->registers[dst]);
                 break;
             case ADD:
-                printf("add\n");
+                printf("add\t[%s: %d + %s: %d",
+                        reg_name(dst), cpu->registers[dst], reg_name(src), cpu->registers[src]);
                 cpu->registers[dst] = cpu->registers[dst] + cpu->registers[src];
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
+                    printf(" (set flag 0)");
                 } else {
                     set_not_equal(cpu);
                 }
+                printf("]\n");
                 break;
             case ADDI:
-                printf("addi\n");
+                printf("addi\t[%s: %d + %d",
+                        reg_name(dst), cpu->registers[dst], src);
                 cpu->registers[dst] = cpu->registers[dst] + src;
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
+                    printf(" (set flag 0)");
                 } else {
                     set_not_equal(cpu);
                 }
+                printf("]\n");
                 break;
             case SUB:
-                printf("sub\n");
+                printf("sub\t[%s: %d - %s: %d",
+                        reg_name(dst), cpu->registers[dst], reg_name(src), cpu->registers[src]);
                 cpu->registers[dst] = cpu->registers[dst] - cpu->registers[src];
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
-                    printf("set flag 0\n");
+                    printf(" (set flag 0)");
                 } else {
                     set_not_equal(cpu);
                 }
+                printf("]\n");
                 break;
             case SUBI:
-                printf("subi\n");
+                printf("subi\t[%s: %d - %d",
+                        reg_name(dst), cpu->registers[dst], src);
                 cpu->registers[dst] = cpu->registers[dst] - src;
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
-                    printf("set flag 0\n");
+                    printf(" (set flag 0)");
                 } else {
                     set_not_equal(cpu);
                 }
+                printf("]\n");
                 break;
             case MUL:
-                printf("mul\n");
+                printf("mul\t[%s: %d * %s: %d]\n",
+                        reg_name(dst), cpu->registers[dst], reg_name(src), cpu->registers[src]);
                 cpu->registers[dst] = cpu->registers[dst] * cpu->registers[src];
                 break;
             case JEQ:
-                printf("jeq\n");
+                printf("jeq\t");
                 if (cpu->flags == 1) {
-                    printf("jumping to %d\n", cpu->registers[src]);
+                    printf("[jumping -> %s: %d]\n", reg_name(src), cpu->registers[src]);
                     jump(cpu, cpu->registers[src]);
+                } else {
+                    printf("[no jump]\n");
                 }
                 break;
             case JEQI:
-                printf("jeqi\n");
+                printf("jeqi\t");
                 if (cpu->flags == 1) {
-                    printf("jumping to %d\n", src);
+                    printf("[jumping -> %d]\n", src);
                     jump(cpu, src);
+                } else {
+                    printf("[no jump]\n");
                 }
                 break;
             case JMP:
-                printf("jmp\n");
-                printf("jumping to %d\n", cpu->registers[src]);
+                printf("jmp\t");
+                printf("[jumping -> %s: %d\n", reg_name(src), cpu->registers[src]);
                 jump(cpu, cpu->registers[src]);
                 break;
             case CALL:
-                printf("call\n");
+                printf("call\t[%s: %d]\n", reg_name(src), cpu->registers[src]);
                 push(cpu, cpu->program_counter);
                 jump(cpu, cpu->registers[src]);
                 break;
             case CALLI:
-                printf("calli\n");
+                printf("calli\t[%d]\n", src);
                 push(cpu, cpu->program_counter);
                 jump(cpu, src);
                 break;
@@ -220,4 +238,28 @@ uint32_t read_from_mem(uint8_t memory[], uint32_t location)
       (uint32_t)memory[location + 1] << 16 |
       (uint32_t)memory[location + 2] << 8  |
       (uint32_t)memory[location + 3];
+}
+
+
+char *reg_name(int r)
+{
+    switch(r) {
+    case EAX:
+        return "EAX";
+    case EBX:
+        return "EBX";
+    case ECX:
+        return "ECX";
+    case EDX:
+        return "EDX";
+    case ESI:
+        return "ESI";
+    case EDI:
+        return "EDI";
+    case ESP:
+        return "ESP";
+    case EBP:
+        return "EBP";
+    }
+    return "error";
 }

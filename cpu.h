@@ -1,3 +1,6 @@
+#ifndef CPU_H
+#define CPU_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -61,3 +64,5 @@ void write_to_mem(uint8_t memory[], uint32_t location, uint32_t content);
 
 // Read four bytes from memory
 uint32_t read_from_mem(uint8_t memory[], uint32_t location);
+
+#endif

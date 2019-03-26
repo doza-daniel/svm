@@ -123,9 +123,28 @@ void run(CPU *cpu)
                     set_not_equal(cpu);
                 }
                 break;
+            case ADDI:
+                printf("addi\n");
+                cpu->registers[dst] = cpu->registers[dst] + src;
+                if (cpu->registers[dst] == 0) {
+                    set_equal(cpu);
+                } else {
+                    set_not_equal(cpu);
+                }
+                break;
             case SUB:
                 printf("sub\n");
                 cpu->registers[dst] = cpu->registers[dst] - cpu->registers[src];
+                if (cpu->registers[dst] == 0) {
+                    set_equal(cpu);
+                    printf("set flag 0\n");
+                } else {
+                    set_not_equal(cpu);
+                }
+                break;
+            case SUBI:
+                printf("subi\n");
+                cpu->registers[dst] = cpu->registers[dst] - src;
                 if (cpu->registers[dst] == 0) {
                     set_equal(cpu);
                     printf("set flag 0\n");

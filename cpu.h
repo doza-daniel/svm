@@ -19,6 +19,7 @@ enum OPS {
     MOVI,
     MOVA,
     PUSH,
+    PUSHI,
     POP,
     ADD,
     SUB,

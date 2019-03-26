@@ -106,6 +106,10 @@ void run(CPU *cpu)
                 printf("push\n");
                 push(cpu, cpu->registers[src]);
                 break;
+            case PUSHI:
+                printf("pushi\n");
+                push(cpu, src);
+                break;
             case POP:
                 printf("pop\n");
                 cpu->registers[dst] = pop(cpu);

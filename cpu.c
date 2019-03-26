@@ -101,6 +101,7 @@ void run(CPU *cpu)
             case MOVA:
                 printf("mova\n");
                 cpu->registers[dst] = read_from_mem(cpu->memory, cpu->registers[src]);
+                break;
             case PUSH:
                 printf("push\n");
                 push(cpu, cpu->registers[src]);

@@ -152,6 +152,10 @@ void run(CPU *cpu)
                     set_not_equal(cpu);
                 }
                 break;
+            case MUL:
+                printf("mul\n");
+                cpu->registers[dst] = cpu->registers[dst] * cpu->registers[src];
+                break;
             case JEQ:
                 printf("jeq\n");
                 if (cpu->flags == 1) {

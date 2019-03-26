@@ -25,6 +25,7 @@ enum OPS {
     ADDI,
     SUB,
     SUBI,
+    MUL,
     JEQ,
     JEQI,
     JMP,

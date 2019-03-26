@@ -1,5 +1,4 @@
 #include "cpu.h"
-#include "debug.h"
 
 int main()
 {
@@ -13,7 +12,6 @@ int main()
     make_instruction(cpu, CALLI, 0, 20);
 
     make_instruction(cpu, HALT, 0, 0);
-
 
     // function: factorial(n)
     // prepare stack frame

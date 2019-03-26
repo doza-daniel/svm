@@ -23,15 +23,15 @@ CPU *new_cpu() {
     return c;
 }
 
-void push(CPU *cpu, int32_t content)
+void push(CPU *cpu, uint32_t content)
 {
     cpu->registers[ESP] -= 4;
-    write_to_mem(cpu->memory, cpu->registers[ESP], (uint32_t)content);
+    write_to_mem(cpu->memory, cpu->registers[ESP], content);
 }
 
-int32_t pop(CPU *cpu)
+uint32_t pop(CPU *cpu)
 {
-    int32_t ret = read_from_mem(cpu->memory, cpu->registers[ESP]);
+    uint32_t ret = read_from_mem(cpu->memory, cpu->registers[ESP]);
     cpu->registers[ESP] += 4;
     return ret;
 }
@@ -68,7 +68,7 @@ void set_not_equal(CPU *cpu)
     cpu->flags &= 0xFFFFFFFE;
 }
 
-void jump(CPU *cpu, int32_t location)
+void jump(CPU *cpu, uint32_t location)
 {
     cpu->program_counter = location;
 }

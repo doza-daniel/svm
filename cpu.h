@@ -26,8 +26,10 @@ enum OPS {
     SUB,
     SUBI,
     JEQ,
+    JEQI,
     JMP,
     CALL,
+    CALLI,
     RET,
     HALT
 };

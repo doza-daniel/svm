@@ -159,6 +159,13 @@ void run(CPU *cpu)
                     jump(cpu, cpu->registers[src]);
                 }
                 break;
+            case JEQI:
+                printf("jeqi\n");
+                if (cpu->flags == 1) {
+                    printf("jumping to %d\n", src);
+                    jump(cpu, src);
+                }
+                break;
             case JMP:
                 printf("jmp\n");
                 printf("jumping to %d\n", cpu->registers[src]);
@@ -168,6 +175,11 @@ void run(CPU *cpu)
                 printf("call\n");
                 push(cpu, cpu->program_counter);
                 jump(cpu, cpu->registers[src]);
+                break;
+            case CALLI:
+                printf("calli\n");
+                push(cpu, cpu->program_counter);
+                jump(cpu, src);
                 break;
             case RET:
                 printf("ret\n");

@@ -8,13 +8,12 @@ int main()
     make_instruction(cpu, MOV,  EBP, ESP);
 
     make_instruction(cpu, PUSHI, 0, 10);
-    // call factorial(10)
+    // call fib(10)
     make_instruction(cpu, CALLI, 0, 20);
 
     make_instruction(cpu, HALT, 0, 0);
 
-    // function: factorial(n)
-    // prepare stack frame
+    // fib(n)
     make_instruction(cpu, PUSH, 0, EBP);
     make_instruction(cpu, MOV, EBP, ESP);
 
@@ -26,28 +25,50 @@ int main()
     // save argument as tmp value in EBX
     make_instruction(cpu, MOV, EBX, EAX);
 
+    // if argument was equal to 0, jump to return
+    make_instruction(cpu, SUBI, EBX, 0);
+    make_instruction(cpu, JEQI, 0, 116);
+
+    // save argument as tmp value in EBX
+    make_instruction(cpu, MOV, EBX, EAX);
+
     // if argument was equal to 1, jump to return
     make_instruction(cpu, SUBI, EBX, 1);
-    make_instruction(cpu, JEQI, 0, 76);
-    // else
-    // save current argument on stack
-    make_instruction(cpu, PUSH, 0, EAX);
-    // call factorial(n-1)
+    make_instruction(cpu, JEQI, 0, 116);
+
+    // store (n-1) -> EDX
+    make_instruction(cpu, MOV, EDX, EBX);
+    // save local (n-2)
+    make_instruction(cpu, SUBI, EBX, 1);
     make_instruction(cpu, PUSH, 0, EBX);
+
+    // fib(n-1)
+    make_instruction(cpu, PUSH, 0, EDX);
     make_instruction(cpu, CALLI, 0, 20);
 
-    // pop the argument for previous call
-    make_instruction(cpu, POP, EBX, 0);
-    // pop the local variable we saved
-    make_instruction(cpu, POP, EBX, 0);
-    // n * factorial(n-1) where EAX = factorial(n-1) and EBX = n
-    make_instruction(cpu, MUL, EAX, EBX);
 
-    // reset stack frame and return
+    // pop last argument
+    make_instruction(cpu, POP, 0, EDX);
+    // pop n-2
+    make_instruction(cpu, POP, 0, EDX);
+    // push result of fib(n-1) as local var
+    make_instruction(cpu, PUSH, 0, EAX);
+
+    // fib(n-2)
+    make_instruction(cpu, PUSH, 0, EDX);
+    make_instruction(cpu, CALLI, 0, 20);
+
+    // pop last argument
+    make_instruction(cpu, POP, 0, EDX);
+    // pop fib(n-1) local var
+    make_instruction(cpu, POP, 0, EDX);
+    // fib(n-1) + fib(n-2)
+    make_instruction(cpu, ADD, EAX, EDX);
+
+
     make_instruction(cpu, MOV, ESP, EBP);
     make_instruction(cpu, POP, EBP, 0);
     make_instruction(cpu, RET, 0, 0);
-
 
     run(cpu);
 

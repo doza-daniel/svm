@@ -203,7 +203,7 @@ void run(CPU *cpu)
                 jump(cpu, src);
                 break;
             case RET:
-                debug("ret\n");
+                debug("ret\t[%d]\n", read_from_mem(cpu->memory, cpu->registers[ESP]));
                 jump(cpu, pop(cpu));
                 break;
         }

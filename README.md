@@ -11,8 +11,9 @@ the rightmost bit.
 ## Instruction format
 Each instruction is 32 bits long and is divided in three sections:
 
-  8 bits   8 bits       16 bits
-|   op   |   dst  |       src      |
+| 8 bits | 8 bits | 16 bits |
+|--------|--------|---------|
+| OP | DST | SRC |
 
 First byte is operation code. Second byte is the number of the destination register.
 The last 16 bits represent either an immediate value or source register number.
